@@ -11,10 +11,10 @@ export default function CreateBarangKeluar() {
   const { atkItem, units, auth } = usePage().props as any;
 
   const [form, setForm] = useState({
-    atk_item_id: atkItem.id,
+    atk_item_id: atkItem?.id,
     tanggal: '',
     qty: 1,
-    satuan: atkItem.satuan,
+    satuan: atkItem?.satuan,
     penerima: '',
     unit_id: '',
     pic: auth?.user?.name ?? '',
@@ -50,7 +50,7 @@ export default function CreateBarangKeluar() {
               <label className="w-40 text-sm font-medium text-gray-700">Nama Barang</label>
               <input
                 type="text"
-                value={atkItem.nama_barang}
+                value={atkItem?.nama_barang}
                 className="w-full py-2 px-4 rounded-full border border-gray-300 bg-gray-100 text-gray-700"
                 disabled
               />
@@ -77,13 +77,13 @@ export default function CreateBarangKeluar() {
                   type="number"
                   name="qty"
                   min={1}
-                  max={atkItem.qty}
+                  max={atkItem?.qty}
                   value={form.qty}
                   onChange={handleChange}
                   className="w-full py-2 px-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                <small className="text-gray-500">Stok tersedia: {atkItem.qty}</small>
+                <small className="text-gray-500">Stok tersedia: {atkItem?.qty}</small>
               </div>
             </div>
 
@@ -92,7 +92,7 @@ export default function CreateBarangKeluar() {
               <label className="w-40 text-sm font-medium text-gray-700">Satuan</label>
               <input
                 type="text"
-                value={atkItem.satuan}
+                value={atkItem?.satuan}
                 className="w-full py-2 px-4 rounded-full border border-gray-300 bg-gray-100 text-gray-700"
                 disabled
               />
@@ -113,7 +113,7 @@ export default function CreateBarangKeluar() {
             </div>
 
             {/* Unit */}
-            <div className="flex items-center gap-4">
+            {/* <div className="flex items-center gap-4">
               <label className="w-40 text-sm font-medium text-gray-700">Unit</label>
               <select
                 name="unit_id"
@@ -129,11 +129,11 @@ export default function CreateBarangKeluar() {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             {/* PIC */}
             <div className="flex items-center gap-4">
-              <label className="w-40 text-sm font-medium text-gray-700">PIC</label>
+              <label className="w-40 text-sm font-medium text-gray-700">Unit</label>
               <input
                 type="text"
                 name="pic"

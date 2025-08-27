@@ -118,7 +118,7 @@ export default function Index() {
                                                         <ShoppingBag className="h-4 w-4" />
                                                         Ambil
                                                     </a>
-                                                    {auth?.user?.role === 'admin' && (
+                                                    {auth?.user?.role === 'superadmin' && (
                                                         <a href={`/atkItems/${item.id}/edit`} className="inline-flex items-center gap-x-1 bg-gray-500 hover:bg-gray-900 text-white px-3 py-1 rounded">
                                                             <Pencil className="h-4 w-4" />
                                                             Edit

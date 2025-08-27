@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->integer('atk_item_id')->unsigned();
+            // $table->integer('atk_item_id')->unsigned();
             $table->string('tanggal');
             $table->string('penerima');
-            $table->integer('unit_id')->unsigned();
             $table->string('nama_barang');
             $table->integer('qty');
             $table->string('satuan');

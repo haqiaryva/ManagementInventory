@@ -52,7 +52,7 @@ export default function Register() {
             <form onSubmit={submit} className="flex flex-col gap-6">
               {/* Name */}
               <div className="flex items-center gap-4 mb-4">
-                <Label htmlFor="name" className="w-40 text-sm font-medium text-gray-700">Full Name</Label>
+                <Label htmlFor="name" className="w-40 text-sm font-medium text-gray-700">Unit Name</Label>
                 <Input
                   id="name"
                   type="text"
@@ -61,7 +61,7 @@ export default function Register() {
                   value={data.name}
                   onChange={(e) => setData('name', e.target.value)}
                   disabled={processing}
-                  placeholder="Enter full name"
+                  placeholder="Enter unit name"
                 />
                 <InputError message={errors.name} className="mt-2" />
               </div>

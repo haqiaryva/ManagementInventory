@@ -11,10 +11,15 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-   public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role', '!=', 'admin')
+        $users = User::whereNotIn('role', ['admin', 'superadmin'])
             ->paginate(10);
+
+        if (config('app.env') === 'production') {
+            $users->setPath(secure_url($request->path()));
+        }
+
         return inertia::render('manageUser/index', [
             'users' => $users
         ]);
@@ -29,7 +34,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -45,5 +50,4 @@ class UserController extends Controller
 
         return redirect()->route('manageUser.index')->with('success', 'User berhasil ditambahkan!');
     }
-
 }

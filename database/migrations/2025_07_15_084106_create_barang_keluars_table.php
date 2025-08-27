@@ -16,10 +16,13 @@ return new class extends Migration
             $table->integer('atk_item_id')->unsigned();
             $table->string('tanggal');
             $table->string('penerima');
-            $table->integer('unit_id')->unsigned();
+            // $table->integer('unit_id')->unsigned();
             $table->integer('qty');
             $table->string('satuan');
             $table->string('pic');
+            $table->enum('status', ['pending', 'approved'])->default('pending');
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });
     }

@@ -16,6 +16,9 @@ class BarangKeluar extends Model
         'qty',
         'satuan',
         'pic',
+        'status', 
+        'approved_by',
+        'approved_at',
     ];
     public function atkItem()
     {
@@ -25,5 +28,10 @@ class BarangKeluar extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

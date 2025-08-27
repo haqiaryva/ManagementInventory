@@ -12,7 +12,7 @@ class AtkItemController extends Controller
     public function index(Request $request)
     {
         $query = AtkItem::query();
-
+        //Pencarian
         if ($request->filled('q')) {
             $q = $request->q;
             $query->where(function ($sub) use ($q) {
@@ -21,6 +21,7 @@ class AtkItemController extends Controller
             });
         }
 
+        //Filter sort
         if ($request->filled('sort_qty')) {
             $sort = $request->sort_qty == 'asc' ? 'asc' : 'desc';
             $query->orderBy('qty', $sort)->orderBy('nama_barang', 'asc');
@@ -29,6 +30,11 @@ class AtkItemController extends Controller
         }
 
         $items = $query->paginate(10)->withQueryString();
+
+        // Ensure HTTPS URLs in production
+        if (config('app.env') === 'production') {
+            $items->setPath(secure_url($request->path()));
+        }
 
         return Inertia::render('atkItems/index', [
             'filters' => [

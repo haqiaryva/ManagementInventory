@@ -65,7 +65,7 @@ export default function Index() {
                                     <path d="M19 16v6" />
                                     <path d="M22 19h-6" />
                                 </svg>
-                                Tambah User
+                                Tambah Unit
                             </Link>
                         </div>
 
@@ -75,7 +75,7 @@ export default function Index() {
                                 <thead className="bg-gray-50 text-gray-600 font-medium">
                                     <tr>
                                         <th className="w-16 text-center px-4 sm:px-6 py-3 border-b">No</th>
-                                        <th className="text-center px-6 py-3 border-b">Nama Lengkap</th>
+                                        <th className="text-center px-6 py-3 border-b">Nama Unit</th>
                                         <th className="text-center px-6 py-3 border-b">Username</th>
                                     </tr>
                                 </thead>

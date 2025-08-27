@@ -30,6 +30,10 @@ class BarangMasukController extends Controller
 
         // dd($barangMasuk->toArray()); // Uncomment for debugging
 
+         if (config('app.env') === 'production') {
+            $barangMasuk->setPath(secure_url($request->path()));
+        }
+
         return Inertia::render('barangMasuk/index', [
             'barangMasuk' => $barangMasuk,
             'filters' => $request->only(['start_date', 'end_date'])

@@ -26,12 +26,12 @@ export default function CreateUnit() {
     const { units, auth } = usePage<PageProps>().props;
     // Inertia form handling
     const { data, setData, post, processing, errors } = useForm({
-        nama_barang: '', 
-        tanggal: '', 
-        penerima: '', 
-        unit_id: '', 
-        qty: '', 
-        satuan: '', 
+        nama_barang: '',
+        tanggal: '',
+        penerima: '',
+        // unit_id: '', 
+        qty: '',
+        satuan: '',
         pic: auth.user.name || '',
     });
 
@@ -74,20 +74,8 @@ export default function CreateUnit() {
                             />
                         </div>
 
-                        <div className="flex items-center gap-4 mb-4">
-                            <label className="w-40 text-sm font-medium text-gray-700">Penerima</label>
-                            <input
-                                type="text"
-                                name="penerima"
-                                value={data.penerima}
-                                onChange={(e) => setData('penerima', e.target.value)}
-                                className="w-full py-2 px-4 rounded-full border border-gray-300"
-                                required
-                            />
-                        </div>
-
-                       {/* Unit */}
-                       <div className="flex items-center gap-4 mb-4">
+                        {/* Unit */}
+                        {/* <div className="flex items-center gap-4 mb-4">
                             <label className="w-40 text-sm font-medium text-gray-700">Unit</label>
                             <select
                                 name="unit_id"
@@ -104,7 +92,7 @@ export default function CreateUnit() {
                                 ))}
                             </select>
                             {errors.unit_id && <p className="text-red-500 text-sm">{errors.unit_id}</p>}
-                        </div>
+                        </div> */}
 
                         <div className="flex items-center gap-4 mb-4">
                             <label className="w-40 text-sm font-medium text-gray-700">Jumlah</label>
@@ -117,7 +105,7 @@ export default function CreateUnit() {
                                 required
                             />
                         </div>
-                        
+
                         <div className="flex items-center gap-4 mb-4">
                             <label className="w-40 text-sm font-medium text-gray-700">Satuan</label>
                             <input
@@ -131,7 +119,19 @@ export default function CreateUnit() {
                         </div>
 
                         <div className="flex items-center gap-4 mb-4">
-                            <label className="w-40 text-sm font-medium text-gray-700">PIC</label>
+                            <label className="w-40 text-sm font-medium text-gray-700">Penerima</label>
+                            <input
+                                type="text"
+                                name="penerima"
+                                value={data.penerima}
+                                onChange={(e) => setData('penerima', e.target.value)}
+                                className="w-full py-2 px-4 rounded-full border border-gray-300"
+                                required
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-4 mb-4">
+                            <label className="w-40 text-sm font-medium text-gray-700">Unit</label>
                             <input
                                 type="text"
                                 name="pic"
@@ -141,7 +141,7 @@ export default function CreateUnit() {
                             />
                         </div>
 
-                        {errors.unit_id && <p className="text-red-500 text-sm">{errors.unit_id}</p>}
+                        {/* {errors.unit_id && <p className="text-red-500 text-sm">{errors.unit_id}</p>} */}
 
                         <div className="flex justify-end">
                             <button
