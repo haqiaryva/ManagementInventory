@@ -18,7 +18,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://inventory-drab-two.vercel.app/",
+        "APP_URL": "https://atk-6zjyt7ns9-telkomwitels-projects.vercel.app/",
         "APP_KEY": "base64:TGaVaXwhWgjn9akhE4SCSIjGG/cQqvICUQ+PgLA3Bs0=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -30,10 +30,10 @@
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
         "DB_CONNECTION": "mysql",
-        "DB_HOST": "mysql-f105983-haqyaryva-3456.d.aivencloud.com",
-        "DB_PORT": "26065",
+        "DB_HOST": "mysql-3210c3e3-sas-c65b.d.aivencloud.com",
+        "DB_PORT": "18449",
         "DB_DATABASE": "atk",
         "DB_USERNAME": "avnadmin",
-        "DB_PASSWORD": "AVNS_QbNb0YKmSmvMsPe_hl7"
+        "DB_PASSWORD": "AVNS_vxD4KNV0AV91PDneJW-"
     }
 }

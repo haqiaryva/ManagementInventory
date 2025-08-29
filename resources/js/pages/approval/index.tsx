@@ -18,7 +18,7 @@ interface Request {
     qty: number;
     satuan: string;
     pic: string;
-    status: 'pending' | 'approved';
+    status: 'pending' | 'approved' | 'rejected';
     unit?: {
         nama_unit: string;
     };
@@ -29,6 +29,7 @@ interface Request {
     approver?: {
         name: string;
     };
+    rejection_reason?: string;
 }
 
 interface PageProps {
@@ -96,23 +97,44 @@ export default function Index() {
                                                 </span>
                                             </td>
                                             <td className="px-4 sm:px-6 py-3 text-center">
-                                                {req.status === 'pending' ? (
-                                                    <button
-                                                        onClick={() => {
-                                                            if (confirm('Lanjutkan ke form selesai?')) {
-                                                                router.visit(route('approval.finishForm', req.id));
-                                                            }
-                                                        }}
-                                                        className="flex justify-center items-center gap-1 px-3 py-1 text-xs sm:text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition"
-                                                        title="Lanjutkan ke Form Selesai"
-                                                    >
-                                                        <Check className="w-4 h-4" />
-                                                        Setujui
-                                                    </button>
-                                                ) : (
-                                                    <span className="text-gray-400 text-sm">-</span>
+                                                {req.status === 'pending' && (
+                                                    <div className="flex gap-2 justify-center">
+                                                        {/* Tombol Setujui */}
+                                                        <button
+                                                            onClick={() => {
+                                                                if (confirm('Lanjutkan ke form selesai?')) {
+                                                                    router.visit(route('approval.finishForm', req.id));
+                                                                }
+                                                            }}
+                                                            className="flex items-center gap-1 px-3 py-1 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200"
+                                                            title="Setujui"
+                                                        >
+                                                            <Check className="w-4 h-4" />
+                                                            Setujui
+                                                        </button>
+                                                        {/* Tombol Reject */}
+                                                        <button
+                                                            onClick={() => {
+                                                                const reason = prompt('Masukkan alasan penolakan:');
+                                                                if (reason) {
+                                                                    router.post(route('approval.reject', req.id), { rejection_reason: reason });
+                                                                }
+                                                            }}
+                                                            className="flex items-center gap-1 px-3 py-1 text-xs bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                                                            title="Tolak"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                            Tolak
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </td>
+                                            {/* <td>
+                                                {req.status === 'rejected' && req.rejection_reason
+                                                    ? <span className="text-red-600" title={req.rejection_reason}>Ditolak</span>
+                                                    : req.status}
+                                            </td> */}
+
                                         </tr>
                                     ))}
                                 </tbody>

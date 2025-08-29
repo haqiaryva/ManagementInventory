@@ -25,8 +25,4 @@ class Request extends Model
         return $this->belongsTo(AtkItem::class, 'atk_item_id');
     }
 
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'unit_id');
-    }
 }

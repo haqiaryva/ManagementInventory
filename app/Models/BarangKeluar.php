@@ -17,17 +17,13 @@ class BarangKeluar extends Model
         'satuan',
         'pic',
         'status', 
+        'rejection_reason',
         'approved_by',
         'approved_at',
     ];
     public function atkItem()
     {
         return $this->belongsTo(AtkItem::class, 'atk_item_id');
-    }
-
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class, 'unit_id');
     }
 
     public function approver()

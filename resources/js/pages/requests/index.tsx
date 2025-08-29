@@ -2,7 +2,7 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage, router, Link } from '@inertiajs/react';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +19,7 @@ interface Request {
     qty: number;
     satuan: string;
     pic: string;
-    status: 'done' | 'pending';
+    status: 'done' | 'pending' | 'rejected';
     unit?: {
         nama_unit: string;
     };
@@ -113,6 +113,8 @@ export default function Index() {
                                             <td className="px-4 sm:px-6 py-3 text-center">
                                                 {req.status === 'done' ? (
                                                     <span className="text-green-600 font-semibold">Done</span>
+                                                ) : req.status === 'rejected' ? (
+                                                    <span className="text-red-600 font-semibold">Rejected</span>
                                                 ) : (
                                                     <span className="text-yellow-600 font-semibold">Pending</span>
                                                 )}
@@ -120,24 +122,41 @@ export default function Index() {
 
                                             {/* Kolom Action hanya untuk Admin */}
                                             {isAdmin && (
-                                                <td className="px-4 sm:px-6 py-3 text-center">
-                                                    {req.status !== 'done' ? (
-                                                        <button
-                                                            onClick={() => {
-                                                                if (confirm('Lanjutkan ke form selesai?')) {
-                                                                    router.visit(route('requests.finishForm', req.id));
-                                                                }
-                                                            }}
-                                                            className="flex justify-center items-center gap-1 px-3 py-1 text-xs sm:text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition"
-                                                            title="Lanjutkan ke Form Selesai"
-                                                        >
-                                                            <Check className="w-4 h-4" />
-                                                            Selesai ?
-                                                        </button>
-                                                    ) : (
-                                                        <span className="text-green-700 font-semibold">-</span>
-                                                    )}
-                                                </td>
+                                                 <td className="px-4 sm:px-6 py-3 text-center">
+        {req.status === 'pending' ? ( // Ubah kondisi menjadi req.status === 'pending'
+            <div className="flex justify-center items-center gap-2">
+                {/* Button Selesai */}
+                <button
+                    onClick={() => {
+                        if (confirm('Lanjutkan ke form selesai?')) {
+                            router.visit(route('requests.finishForm', req.id));
+                        }
+                    }}
+                    className="flex justify-center items-center gap-1 px-3 py-1 text-xs sm:text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition"
+                    title="Lanjutkan ke Form Selesai"
+                >
+                    <Check className="w-4 h-4" />
+                    Selesai?
+                </button>
+
+                {/* Button Tolak */}
+                <button
+                    onClick={() => {
+                        if (confirm('Apakah Anda yakin ingin menolak request ini?')) {
+                            router.visit(route('requests.reject', req.id));
+                        }
+                    }}
+                    className="flex justify-center items-center gap-1 px-3 py-1 text-xs sm:text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition"
+                    title="Tolak Request"
+                >
+                    <X className="w-4 h-4" />
+                    Tolak
+                </button>
+            </div>
+        ) : (
+            <span className="text-gray-500 font-semibold">-</span> // Tampilkan dash untuk semua status selain pending
+        )}
+    </td>
                                             )}
                                         </tr>
                                     ))}

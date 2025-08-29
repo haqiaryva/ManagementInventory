@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\Unit;
 use App\Models\Request as RequestModel;
-use APP\Models\AtkItem;
+use App\Models\AtkItem;
 use App\Models\BarangMasuk;
-
 
 class RequestController extends Controller
 {
+    /**
+     * Menampilkan daftar permintaan ATK
+     */
     public function index(Request $request)
     {
 
-        $requests = RequestModel::with('unit')->orderBy('created_at', 'desc')->paginate(10);
+        $userName = Auth::user()->name;
+        $requests = RequestModel::orderBy('created_at', 'desc')->paginate(10);
 
+        // Gunakan secure URL di production environment
         if (config('app.env') === 'production') {
             $requests->withPath(secure_url($request->path()));
         }
@@ -27,64 +30,62 @@ class RequestController extends Controller
         ]);
     }
 
+    /**
+     * Menampilkan form untuk membuat permintaan ATK baru
+     */
     public function create()
     {
-        $units = Unit::all();
-        return Inertia::render('requests/create', [
-            'units' => $units
-        ]);
+        return Inertia::render('requests/create');
     }
 
+    /**
+     * Menyimpan permintaan ATK baru ke database
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            // 'atk_item_id' => 'nullable|exists:atk_items,id',
+        $validatedData = $request->validate([
             'nama_barang' => 'nullable|string|max:255',
             'tanggal' => 'required|date',
             'penerima' => 'required|string|max:255',
-            // 'unit_id' => 'required|integer|exists:units,id',
-            // 'unit' => 'required|string|max:255',
             'qty' => 'required|integer|min:1',
             'satuan' => 'required|string|max:50',
             'pic' => 'required|string|max:255',
         ]);
 
-        // Pastikan user mengisi salah satu: atk_item_id atau nama_barang_baru
-        // if (!$request->atk_item_id && !$request->nama_barang_baru) {
-        //     return back()->withErrors(['atk_item_id' => 'Pilih barang atau isi nama barang baru'])->withInput();
-        // }
-
+        // Buat record permintaan baru
         RequestModel::create([
-            // 'atk_item_id' => $request->atk_item_id,
-            'nama_barang' => $request->nama_barang ?? 'null', // disimpan jika barang baru
-            'tanggal' => $request->tanggal,
-            'penerima' => $request->penerima,
-            // 'unit_id' => $request->unit_id,
-            'qty' => $request->qty,
-            'satuan' => $request->satuan,
-            'pic' =>  Auth::user()->name,
+            'nama_barang' => $validatedData['nama_barang'] ?? null,
+            'tanggal' => $validatedData['tanggal'],
+            'penerima' => $validatedData['penerima'],
+            'qty' => $validatedData['qty'],
+            'satuan' => $validatedData['satuan'],
+            'pic' => Auth::user()->name,
             'status' => 'pending',
         ]);
 
-        return redirect()->route('requests.index')->with('success', 'Permintaan ATK berhasil dikirim!');
+        return redirect()->route('requests.index')
+            ->with('success', 'Permintaan ATK berhasil dikirim!');
     }
 
-    // (Opsional) Update status oleh admin
+    /**
+     * Mengarahkan ke form penyelesaian permintaan
+     */
     public function updateStatus($id)
     {
         $request = RequestModel::findOrFail($id);
-
-        // Redirect ke form finish, bukan langsung update status
+        
         return redirect()->route('requests.finishForm', $id);
     }
 
-
+    /**
+     * Menampilkan form penyelesaian permintaan
+     */
     public function finishForm($id)
     {
         $request = RequestModel::findOrFail($id);
-
-        // Tampilkan form hanya jika barang baru (tidak ada di atk_items)
-        $isBarangBaru = !$request->nama_barang || $request->nama_barang === 'null' ? false : true;
+        
+        // Periksa apakah ini barang baru
+        $isBarangBaru = !empty($request->nama_barang) && $request->nama_barang !== 'null';
 
         return Inertia::render('requests/finish', [
             'request' => $request,
@@ -92,45 +93,59 @@ class RequestController extends Controller
         ]);
     }
 
-    public function finish(Request $req, $id)
+    /**
+     * Menyelesaikan permintaan dan menambahkan barang ke inventory
+     */
+    public function finish(Request $request, $id)
     {
         $requestModel = RequestModel::findOrFail($id);
-
+        
         // Validasi input
-        $rules = [
+        $validatedData = $request->validate([
             'kode_barang' => 'required|string|max:255|unique:atk_items,kode_barang',
             'lokasi_simpan' => 'required|string|max:255',
-            'qty' => 'required|integer|min:1', // Tambahkan validasi untuk qty
-        ];
-
-        $req->validate($rules);
-
-        // Buat barang baru di atk_items
-        $atkItem = \App\Models\AtkItem::create([
-            'nama_barang' => $requestModel->nama_barang,
-            'kode_barang' => $req->kode_barang,
-            'qty' => 0, // Akan ditambah di bawah
-            'satuan' => $requestModel->satuan,
-            'lokasi_simpan' => $req->lokasi_simpan,
+            'qty' => 'required|integer|min:1',
         ]);
 
-        // Catat barang masuk - gunakan qty dari input form, bukan dari model Request
-        \App\Models\BarangMasuk::create([
+        // Buat item ATK baru
+        $atkItem = AtkItem::create([
+            'nama_barang' => $requestModel->nama_barang,
+            'kode_barang' => $validatedData['kode_barang'],
+            'qty' => 0, // Akan diupdate setelah barang masuk dicatat
+            'satuan' => $requestModel->satuan,
+            'lokasi_simpan' => $validatedData['lokasi_simpan'],
+        ]);
+
+        // Catat barang masuk
+        BarangMasuk::create([
             'atk_item_id' => $atkItem->id,
             'tanggal' => now()->toDateString(),
-            'qty' => $req->qty, // Gunakan qty dari input form
+            'qty' => $validatedData['qty'],
             'satuan' => $requestModel->satuan,
             'pic' => Auth::user()->name,
         ]);
 
-        // Update stok - gunakan qty dari input form
-        $atkItem->qty += $req->qty;
-        $atkItem->save();
+        // Update stok barang
+        $atkItem->increment('qty', $validatedData['qty']);
 
-        // Update status request
-        $requestModel->status = 'done';
-        $requestModel->save();
+        // Update status permintaan
+        $requestModel->update(['status' => 'done']);
 
-        return redirect()->route('barangMasuk.index')->with('success', 'Request selesai & barang masuk dicatat!');
+        return redirect()->route('barangMasuk.index')
+            ->with('success', 'Request selesai & barang masuk dicatat!');
+    }
+
+    /**
+     * Menolak permintaan dan mengubah status menjadi reject
+     */
+    public function reject($id)
+    {
+        $request = RequestModel::findOrFail($id);
+        
+        // Update status menjadi reject
+        $request->update(['status' => 'rejected']);
+        
+        return redirect()->route('requests.index')
+            ->with('success', 'Request berhasil ditolak!');
     }
 }

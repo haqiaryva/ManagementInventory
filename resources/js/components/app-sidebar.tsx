@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, PackageSearch, SquareArrowDown, SquareArrowUp, TicketSlash, Building2, UsersRound, PackageX, CheckCircle } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, PackageSearch, SquareArrowDown, SquareArrowUp, TicketSlash, Building2, PackageX, CheckCircle, Newspaper } from 'lucide-react';
 import AppLogo from './app-logo';
 import { usePage } from '@inertiajs/react';
 
@@ -38,6 +38,12 @@ const superadminNavItems: NavItem[] = [
         title: 'Requests',
         href: '/requests',
         icon: TicketSlash,
+    },
+    
+    {
+        title: 'Information',
+        href: '/information',
+        icon: Newspaper,
     },
 
     {
@@ -97,6 +103,12 @@ const adminNavItems: NavItem[] = [
     },
 
     {
+        title: 'Information',
+        href: '/information',
+        icon: Newspaper,
+    },
+
+    {
         title: 'Approval',
         href: '/approval',
         icon: CheckCircle,
@@ -125,6 +137,12 @@ const userNavItems: NavItem[] = [
         title: 'Requests',
         href: '/requests',
         icon: TicketSlash,
+    },
+
+    {
+        title: 'Information',
+        href: '/information',
+        icon: Newspaper,
     },
 ];
 
